@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Cancel Appointment — ANC Portal{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-3">
+    <a href="{% url 'appointment_list' %}" class="btn btn-sm btn-outline-secondary me-3"><i
+            class="bi bi-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0 text-warning">Cancel Appointment</h4>
+</div>
+<div class="card" style="max-width:500px">
+    <div class="card-body">
+        <p>Are you sure you want to cancel this appointment?</p>
+        <ul class="list-unstyled">
+            <li><strong>Patient:</strong> {{ appointment.patient.name }}</li>
+            <li><strong>Date:</strong> {{ appointment.appointment_date|date:"M d, Y H:i" }}</li>
+            <li><strong>Notes:</strong> {{ appointment.notes|default:"—" }}</li>
+        </ul>
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-warning"><i class="bi bi-slash-circle"></i> Yes, Cancel</button>
+                <a href="{% url 'appointment_list' %}" class="btn btn-outline-secondary">Go Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

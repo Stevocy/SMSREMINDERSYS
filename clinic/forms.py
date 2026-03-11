@@ -1,0 +1,76 @@
+from django import forms
+from .models import Patient, Appointment
+
+class PatientForm(forms.ModelForm):
+    class Meta:
+        model = Patient
+        fields = [
+            'name', 'phone_number', 'id_number',
+            'date_of_birth', 'expected_delivery_date',
+            'address', 'gestational_age_weeks'
+        ]
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'expected_delivery_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    # def clean_phone_number(self):
+    #     phone_number = self.cleaned_data.get('phone_number')
+    #     if not phone_number:
+    #         return phone_number
+
+    #     # Remove spaces and dashes
+    #     phone_number = phone_number.replace(' ', '').replace('-', '')
+
+    #     # Ensure it starts with +
+    #     if not phone_number.startswith('+'):
+    #         raise forms.ValidationError("Phone number must include country code (e.g., +254...)")
+
+    #     # Basic digits check
+    #     if not phone_number[1:].isdigit():
+    #         raise forms.ValidationError("Phone number must contain only digits after country code")
+
+    #     if len(phone_number) < 10 or len(phone_number) > 16:
+    #         raise forms.ValidationError("Invalid phone number length")
+
+    #     return phone_number
+def clean_phone_number(self):
+    phone = self.cleaned_data.get('phone_number')
+
+    if not phone:
+        return phone
+
+    # Remove spaces and dashes
+    phone = phone.replace(" ", "").replace("-", "")
+
+    # Convert Kenyan formats to E.164
+    if phone.startswith("0"):
+        phone = "+254" + phone[1:]
+    elif phone.startswith("254"):
+        phone = "+" + phone
+    elif phone.startswith("7") and len(phone) == 9:
+        phone = "+254" + phone
+    elif phone.startswith("+254"):
+        pass
+    else:
+        raise forms.ValidationError(
+            "Enter a valid Kenyan phone number (e.g. 0712345678)"
+        )
+
+    # Final validation
+    if not phone[1:].isdigit():
+        raise forms.ValidationError("Phone number must contain digits only.")
+
+    if len(phone) != 13:
+        raise forms.ValidationError("Invalid Kenyan phone number.")
+
+    return phone
+
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ['patient', 'appointment_date', 'notes']
+        widgets = {
+            'appointment_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }

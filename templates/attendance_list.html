@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Attendance — ANC Portal{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0"><i class="bi bi-check2-circle"></i> Attendance Records</h4>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Patient</th>
+                    <th>Appointment Date</th>
+                    <th>Attendance Status</th>
+                    <th>Recorded At</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td><a href="{% url 'patient_detail' record.appointment.patient.pk %}">{{ record.appointment.patient.name }}</a></td>
+                    <td>{{ record.appointment.appointment_date|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if record.status == 'Attended' %}
+                        <span class="badge bg-success">Attended</span>
+                        {% else %}
+                        <span class="badge bg-danger">Missed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ record.recorded_at|date:"M d, Y H:i" }}</td>
+                    <td>{{ record.notes|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">No attendance records yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

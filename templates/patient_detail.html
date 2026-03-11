@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}{{ patient.name }} — ANC Portal{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4 gap-2 flex-wrap">
+    <a href="{% url 'patient_list' %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0 me-auto">{{ patient.name }}</h4>
+    <a href="{% url 'send_sms_to_patient' patient.pk %}" class="btn btn-success">
+        <i class="bi bi-send-fill me-1"></i> Send SMS
+    </a>
+    <a href="{% url 'patient_update' patient.pk %}" class="btn btn-primary">
+        <i class="bi bi-pencil me-1"></i> Edit
+    </a>
+    <a href="{% url 'patient_delete' patient.pk %}" class="btn btn-outline-danger">
+        <i class="bi bi-trash me-1"></i> Delete
+    </a>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header"><i class="bi bi-person-vcard me-1"></i> Patient Details</div>
+            <div class="card-body">
+                <dl class="mb-0 row">
+                    <dt class="col-5 text-muted">ID Number</dt>
+                    <dd class="col-7">{{ patient.id_number }}</dd>
+                    <dt class="col-5 text-muted">Phone</dt>
+                    <dd class="col-7 fw-semibold">{{ patient.phone_number }}</dd>
+                    <dt class="col-5 text-muted">Date of Birth</dt>
+                    <dd class="col-7">{{ patient.date_of_birth|date:"M d, Y" }}</dd>
+                    <dt class="col-5 text-muted">Expected Delivery</dt>
+                    <dd class="col-7">{{ patient.expected_delivery_date|date:"M d, Y" }}</dd>
+                    <dt class="col-5 text-muted">Gestation</dt>
+                    <dd class="col-7">{% if patient.gestational_age_weeks %}{{ patient.gestational_age_weeks }} wks{%
+                        else %}—{% endif %}</dd>
+                    <dt class="col-5 text-muted">Address</dt>
+                    <dd class="col-7">{{ patient.address|default:"—" }}</dd>
+                    <dt class="col-5 text-muted">Registered</dt>
+                    <dd class="col-7">{{ patient.registration_date|date:"M d, Y" }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-calendar3 me-1"></i> Appointments</span>
+                <a href="{% url 'appointment_create' %}" class="btn btn-light btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i>Schedule
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date &amp; Time</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in appointments %}
+                        <tr>
+                            <td>{{ appt.appointment_date|date:"M d, Y H:i" }}</td>
+                            <td>
+                                {% if appt.status == 'Completed' %}
+                                <span class="badge bg-success">Completed</span>
+                                {% elif appt.status == 'Missed' %}
+                                <span class="badge bg-danger">Missed</span>
+                                {% elif appt.status == 'Cancelled' %}
+                                <span class="badge bg-secondary">Cancelled</span>
+                                {% else %}
+                                <span class="badge bg-primary">Scheduled</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted small">{{ appt.notes|default:"—" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">No appointments yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

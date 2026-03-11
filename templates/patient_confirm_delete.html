@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Delete Patient — ANC Portal{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-3">
+    <a href="{% url 'patient_list' %}" class="btn btn-sm btn-outline-secondary me-3"><i
+            class="bi bi-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0 text-danger">Delete Patient</h4>
+</div>
+
+<div class="card" style="max-width:500px">
+    <div class="card-body">
+        <p class="mb-1">Are you sure you want to delete:</p>
+        <h5 class="fw-bold">{{ patient.name }}</h5>
+        <p class="text-muted small">ID: {{ patient.id_number }} | Phone: {{ patient.phone_number }}</p>
+        <div class="alert alert-warning"><i class="bi bi-exclamation-triangle"></i> This will also delete all associated
+            appointments and SMS logs.</div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Yes, Delete</button>
+                <a href="{% url 'patient_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

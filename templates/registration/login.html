@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Login — ANC Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="card shadow-lg" style="max-width: 400px; width: 100%; border-radius: 15px; overflow: hidden; border: none;">
+        <div class="card-header text-center py-3" style="background: #1b4f72; color: white;">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-lock-fill me-2"></i>Secure Login</h5>
+        </div>
+        
+        <div class="card-body p-4 bg-white">
+            <p class="text-muted small text-center mb-4">Please enter your credentials to access the ANC Portal.</p>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ form.non_field_errors }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label fw-semibold small text-uppercase">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <div class="form-text text-muted small">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% if field.errors %}
+                    <div class="text-danger small mt-1">{{ field.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label" for="remember">Remember me</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 mt-2 fw-bold shadow-sm">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+
+                <div class="mt-4 text-center">
+                    <a href="{% url 'password_reset' %}" class="small text-muted text-decoration-none">
+                        Forgot your password?
+                    </a>
+                </div>
+            </form>
+
+            <div class="mt-4 pt-3 border-top text-center">
+                <p class="small text-muted mb-0">
+                    Don't have an account? 
+                    <a href="{% url 'register' %}" class="fw-bold text-decoration-none">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

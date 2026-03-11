@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Send SMS — {{ patient.name }} — ANC Portal{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4 gap-2">
+    <a href="{% url 'patient_detail' patient.pk %}" class="btn btn-sm btn-outline-secondary"><i
+            class="bi bi-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0">Send SMS to {{ patient.name }}</h4>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-person-circle me-1"></i> Patient</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-5 text-muted">Name</dt>
+                    <dd class="col-7 fw-semibold">{{ patient.name }}</dd>
+                    <dt class="col-5 text-muted">Phone</dt>
+                    <dd class="col-7 fw-bold text-success">{{ patient.phone_number }}</dd>
+                    <dt class="col-5 text-muted">ID Number</dt>
+                    <dd class="col-7">{{ patient.id_number }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-send-fill me-1"></i> Compose Message</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="message" class="form-label fw-semibold">Message</label>
+                        <textarea id="message" name="message" class="form-control" rows="5"
+                            placeholder="Type your message here... Leave blank to send the default reminder."></textarea>
+                        <div class="form-text">
+                            Leave blank to send the default antenatal clinic reminder message.<br>
+                            Will be sent to <strong>{{ patient.phone_number }}</strong>.
+                        </div>
+                    </div>
+
+                    <!-- Quick message templates -->
+                    <p class="fw-semibold mb-2 small">Quick Templates:</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            onclick="setMessage('Dear {{ patient.name }}, you have an upcoming antenatal clinic visit. Please attend on time. — ANC Clinic')">
+                            Appointment Reminder
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            onclick="setMessage('Dear {{ patient.name }}, you missed your last antenatal clinic appointment. Please contact us to reschedule. — ANC Clinic')">
+                            Missed Visit
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            onclick="setMessage('Dear {{ patient.name }}, congratulations on your upcoming delivery! Please ensure you visit the clinic for your final checkup. — ANC Clinic')">
+                            Final Checkup
+                        </button>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-send-fill me-1"></i> Send SMS Now
+                        </button>
+                        <a href="{% url 'patient_detail' patient.pk %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function setMessage(text) {
+        document.getElementById('message').value = text;
+    }
+</script>
+{% endblock %}
