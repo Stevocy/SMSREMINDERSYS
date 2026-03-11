@@ -135,7 +135,11 @@ LOGIN_URL = '/accounts/login/'         # ← must match your login path
 
 
 # Africa's Talking credentials
-AT_USERNAME = os.environ.get('AT_USERNAME', 'sandbox')           # fallback to sandbox for local dev
-AT_API_KEY  = os.environ.get('AT_API_KEY', '')
-AT_SENDER_ID = os.environ.get('AT_SENDER_ID', None)              # optional
-SMS_PROVIDER = os.environ.get('SMS_PROVIDER', 'mock')  # or 'africastalking'
+
+SMS_PROVIDER = "africastalking"
+
+AT_USERNAME = "sandbox"
+AT_API_KEY = "atsk_ed7b0ce2fdc054cea840bee5096711d3f35669e86cb4f187f142cabf2db93228d1e2cec3"
+
+# optional
+AT_SENDER_ID = None
