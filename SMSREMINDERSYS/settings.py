@@ -85,7 +85,18 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    'hospital': {                     # ← NEW DATABASE
+        'ENGINE': 'django.db.backends.mysql',      # Change to postgresql if needed
+        'NAME': 'hospital_db_name',                # ← Change to real DB name
+        'USER': 'hospital_user',
+        'PASSWORD': 'hospital_password',
+        'HOST': '127.0.0.1',                       # or hospital server IP
+        'PORT': '3306',                            # 5432 for PostgreSQL
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+    },
 }
 
 
@@ -113,9 +124,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
-USE_I18N = True
+# USE_I18N = True
 
 USE_TZ = True
 
@@ -143,3 +154,21 @@ AT_API_KEY = "atsk_ed7b0ce2fdc054cea840bee5096711d3f35669e86cb4f187f142cabf2db93
 
 # optional
 AT_SENDER_ID = None
+
+# ==================== CELERY CONFIG ====================
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'          # Stores task results in DB
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Nairobi'           # Change if needed
+
+# For django-celery-beat
+INSTALLED_APPS += [
+    'django_celery_beat',
+    'django_celery_results',
+]
+
+# Optional: Make tasks run in your local timezone
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

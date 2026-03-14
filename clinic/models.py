@@ -31,7 +31,7 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.patient.name} - {self.appointment_date.strftime('%Y-%m-%d %H:%M')}"
-
+    reminder_sent = models.BooleanField(default=False)
 
 class Attendance(models.Model):
     STATUS_CHOICES = [

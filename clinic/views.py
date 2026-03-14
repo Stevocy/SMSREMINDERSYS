@@ -236,7 +236,7 @@ def send_sms_to_patient(request, pk):
                 f"Contact us if you need to reschedule."
             )
         from .sms_service import send_sms
-        success = send_sms("+254700000001", custom_message)
+        success = send_sms(patient.phone_number, custom_message)
 
         # Log it — link to the most recent upcoming appointment if available
         appointment = patient.appointments.filter(status='Scheduled').order_by('appointment_date').first()
@@ -249,7 +249,7 @@ def send_sms_to_patient(request, pk):
             )
 
         if success:
-            messages.success(request, f"SMS sent successfully to {patient.name} ({"+254700000001"}).")
+            messages.success(request, f"SMS sent successfully to {patient.name} ({patient.phone_number}).")
         else:
             messages.error(request, f"Failed to send SMS to {patient.name}. Check the phone number format.")
         return redirect('patient_detail', pk=pk)

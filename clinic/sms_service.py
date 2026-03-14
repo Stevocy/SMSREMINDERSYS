@@ -6,8 +6,10 @@
 import re
 import africastalking
 import ssl
+import requests
 
-ssl._create_default_https_context = ssl._create_unverified_context
+
+#ssl._create_default_https_context = ssl._create_unverified_context
 
 # Africa's Talking credentials
 USERNAME = "sandbox"
@@ -60,28 +62,46 @@ def validate_phone_number(phone_number: str) -> bool:
 # Send Single SMS
 # -------------------------------
 
+# def send_sms(phone_number: str, message: str) -> bool:
+
+#     phone_number = normalize_phone_number(phone_number)
+
+#     if not validate_phone_number(phone_number):
+#         print("Invalid phone number:", phone_number)
+#         return False
+
+#     try:
+#         response = sms.send(message, [phone_number])
+
+#         print("Africa's Talking response:", response)
+
+#         recipients = response.get("SMSMessageData", {}).get("Recipients", [])
+
+#         return any(r.get("status") == "Success" for r in recipients)
+
+#     except Exception as e:
+#         print("SMS sending failed:", str(e))
+#         return False
+
+
+import requests
+
 def send_sms(phone_number: str, message: str) -> bool:
-
-    phone_number = normalize_phone_number(phone_number)
-
-    if not validate_phone_number(phone_number):
-        print("Invalid phone number:", phone_number)
-        return False
-
+    url = "https://api.sandbox.africastalking.com/version1/messaging"
+    headers = {"apiKey": API_KEY, "Content-Type": "application/x-www-form-urlencoded"}
+    data = {
+        "username": USERNAME,
+        "to": phone_number,
+        "message": message,
+    }
     try:
-        response = sms.send(message, [phone_number])
-
-        print("Africa's Talking response:", response)
-
-        recipients = response.get("SMSMessageData", {}).get("Recipients", [])
-
-        return any(r.get("status") == "Success" for r in recipients)
-
+        r = requests.post(url, headers=headers, data=data, verify=False)  # remove verify=False later
+        print("Direct requests status:", r.status_code, r.text)
+        return r.status_code == 201
     except Exception as e:
-        print("SMS sending failed:", str(e))
+        print("Direct requests failed:", e)
         return False
-
-
+    
 # -------------------------------
 # Send Bulk SMS
 # -------------------------------

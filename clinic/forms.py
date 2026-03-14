@@ -14,26 +14,7 @@ class PatientForm(forms.ModelForm):
             'expected_delivery_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    # def clean_phone_number(self):
-    #     phone_number = self.cleaned_data.get('phone_number')
-    #     if not phone_number:
-    #         return phone_number
 
-    #     # Remove spaces and dashes
-    #     phone_number = phone_number.replace(' ', '').replace('-', '')
-
-    #     # Ensure it starts with +
-    #     if not phone_number.startswith('+'):
-    #         raise forms.ValidationError("Phone number must include country code (e.g., +254...)")
-
-    #     # Basic digits check
-    #     if not phone_number[1:].isdigit():
-    #         raise forms.ValidationError("Phone number must contain only digits after country code")
-
-    #     if len(phone_number) < 10 or len(phone_number) > 16:
-    #         raise forms.ValidationError("Invalid phone number length")
-
-    #     return phone_number
 def clean_phone_number(self):
     phone = self.cleaned_data.get('phone_number')
 

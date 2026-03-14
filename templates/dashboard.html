@@ -12,30 +12,48 @@
         </div>
     </div>
 </div>
-
+  
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
         <div class="stat-card" style="background:linear-gradient(135deg,#1a6e3c,#2d9e5f)">
             <div class="fs-5 fw-bold">{{ total_patients }}</div>
-            <div class="small"><i class="bi bi-people"></i> Registered Patients</div>
+            <div class="small">
+                <a href="{% url 'patient_list' %}" class="text-white text-decoration-none">
+                    <i class="bi bi-people"></i>
+                    Registered Patients
+                </a>
+               
+            </div>
         </div>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">
             <div class="fs-5 fw-bold">{{ total_scheduled }}</div>
-            <div class="small"><i class="bi bi-calendar3"></i> Scheduled</div>
+            <div class="small">
+                <a href="{% url 'appointment_list' %}" class="text-white text-decoration-none">
+                    <i class="bi bi-calendar3"></i> 
+                    Scheduled
+                </a>
+            </div>
         </div>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card" style="background:linear-gradient(135deg,#e65100,#ff8f00)">
             <div class="fs-5 fw-bold">{{ total_missed }}</div>
-            <div class="small"><i class="bi bi-x-circle"></i> Missed</div>
+            <div class="small">
+                <a  href="{% url 'attendance_list' %}" class="text-white text-decoration-none">
+                    <i class="bi bi-x-circle"></i>
+                    Missed 
+                </a>
+            </div>
         </div>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card" style="background:linear-gradient(135deg,#6a0dad,#ab47bc)">
             <div class="fs-5 fw-bold">{{ sms_sent }}</div>
-            <div class="small"><i class="bi bi-chat-dots"></i> SMS Sent</div>
+            <div class="small"><a  href="{% url 'sms_log_list' %}" class="text-white text-decoration-none">
+                <i class="bi bi-chat-dots"></i> SMS Sent</a>
+            </div>
         </div>
     </div>
 </div>
