@@ -13,7 +13,6 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
-
     # Patients (Mother Enrolment)
     path('patients/', views.patient_list, name='patient_list'),
     path('patients/add/', views.patient_create, name='patient_create'),
@@ -28,6 +27,7 @@ urlpatterns = [
     path('appointments/<int:pk>/complete/', views.appointment_complete, name='appointment_complete'),
     path('appointments/<int:pk>/cancel/', views.appointment_cancel, name='appointment_cancel'),
     path('appointments/<int:pk>/miss/', views.appointment_miss, name='appointment_miss'),
+    path('appointments/<int:pk>/checkin/', views.patient_checkin, name='patient_checkin'),
 
     # Attendance
     path('attendance/', views.attendance_list, name='attendance_list'),
@@ -37,15 +37,15 @@ urlpatterns = [
     path('patients/<int:pk>/send-sms/', views.send_sms_to_patient, name='send_sms_to_patient'),
     path('sms-logs/', views.sms_log_list, name='sms_log_list'),
 
+    # Notifications
+    path('notifications/', views.notification_list, name='notification_list'),
+    path('notifications/<int:pk>/read/', views.mark_notification_read, name='mark_notification_read'),
+    path('notifications/mark-all-read/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
+    path('api/notifications/unread-count/', views.unread_notification_count, name='unread_notification_count'),
+    path('api/notifications/recent/', views.recent_notifications_api, name='recent_notifications_api'),
+
     # Reports
     path('reports/', views.reports, name='reports'),
     path('reports/export-csv/', views.export_csv, name='export_csv'),
     path("test-sms/", views.test_bulk_sms, name="test_sms"),
-
 ]
-
-# from django.urls import path
-# from . import views
-
-# urlpatterns = [
-# ]

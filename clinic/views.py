@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.utils import timezone
-from .models import Patient, Appointment, Attendance, SMSLog
+from .models import Patient, Appointment, Attendance, SMSLog, Notification
 from .forms import PatientForm, AppointmentForm
 
 
@@ -213,6 +213,31 @@ def record_attendance(request, pk):
         return redirect('attendance_list')
     return render(request, 'record_attendance.html', {'appointment': appointment})
 
+@login_required
+def patient_checkin(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk)
+    
+    # Update the appointment status to "Arrived"
+    appointment.status = 'Arrived'          # or 'Completed' if you prefer
+    appointment.save()
+    
+    # Create notification for all users that the patient has arrived
+    from django.contrib.auth.models import User
+    users = User.objects.filter(is_active=True)
+    for user in users:
+        recipient_name = user.get_full_name() or user.username
+        Notification.objects.create(
+            recipient=user,
+            notification_type='check_in',
+            title='Patient Arrived',
+            message=f"Hello {recipient_name}, the expected patient {appointment.patient.name} has arrived for their appointment.",
+            appointment=appointment
+        )
+    
+    messages.success(request, f"✅ {appointment.patient.name} has been marked as Arrived.")
+    
+    # Redirect back to dashboard
+    return redirect('dashboard')
 
 # ── SMS Logs ──────────────────────────────────────────────────────────────────
 
@@ -346,3 +371,42 @@ def test_bulk_sms(request):
     response = send_bulk_sms(numbers, message)
 
     return JsonResponse(response, safe=False)
+
+
+# ── Notifications ────────────────────────────────────────────────────────────
+
+@login_required
+def notification_list(request):
+    notifications = request.user.notifications.all()
+    return render(request, 'notification_list.html', {'notifications': notifications})
+
+@login_required
+def mark_notification_read(request, pk):
+    if request.method == 'POST':
+        notification = get_object_or_404(Notification, pk=pk, recipient=request.user)
+        notification.is_read = True
+        notification.save()
+    return redirect(request.META.get('HTTP_REFERER', 'notification_list'))
+
+@login_required
+def mark_all_notifications_read(request):
+    if request.method == 'POST':
+        request.user.notifications.filter(is_read=False).update(is_read=True)
+    return redirect(request.META.get('HTTP_REFERER', 'notification_list'))
+
+@login_required
+def unread_notification_count(request):
+    count = request.user.notifications.filter(is_read=False).count()
+    return JsonResponse({'count': count})
+
+@login_required
+def recent_notifications_api(request):
+    notifications = request.user.notifications.all()[:5]
+    data = [{
+        'id': n.id,
+        'title': n.title,
+        'message': n.message,
+        'is_read': n.is_read,
+        'created_at': n.created_at.strftime('%Y-%m-%d %H:%M')
+    } for n in notifications]
+    return JsonResponse({'notifications': data})

@@ -1,108 +1,202 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard — ANC Portal{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 fade-in">
     <div>
-        <h4 class="fw-bold mb-0 text-dark">Dashboard Overview</h4>
-        <!-- <p class="text-muted small mb-0">Logged in as: <span class="fw-bold text-primary">{{ user.username }}</span></p> -->
+        <h4 class="fw-bold mb-0 text-dark">Dashboard</h4>
+        <p class="text-muted small mb-0">Welcome back, <span class="fw-bold text-primary">{{ user.username }}</span></p>
     </div>
     <div class="text-end">
-        <div class="badge bg-white text-dark border shadow-sm px-3 py-2">
+        <div class="badge bg-white text-dark border shadow-sm px-3 py-2 rounded-pill">
             <i class="bi bi-calendar3 me-1 text-primary"></i> {% now "l, F j, Y" %}
         </div>
     </div>
 </div>
-  
+
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
-        <div class="stat-card" style="background:linear-gradient(135deg,#1a6e3c,#2d9e5f)">
-            <div class="fs-5 fw-bold">{{ total_patients }}</div>
+        <div class="stat-card fade-in"
+            style="background:linear-gradient(135deg,#1a6e3c,#2d9e5f); animation-delay: 100ms;">
+            <div class="fs-5 fw-bold counter-animate" data-target="{{ total_patients }}">0</div>
             <div class="small">
-                <a href="{% url 'patient_list' %}" class="text-white text-decoration-none">
-                    <i class="bi bi-people"></i>
-                    Registered Patients
-                </a>
-               
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="stat-card" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">
-            <div class="fs-5 fw-bold">{{ total_scheduled }}</div>
-            <div class="small">
-                <a href="{% url 'appointment_list' %}" class="text-white text-decoration-none">
-                    <i class="bi bi-calendar3"></i> 
-                    Scheduled
+                <a href="{% url 'patient_list' %}" class="text-white text-decoration-none stretched-link">
+                    <i class="bi bi-people"></i> Registered Patients
                 </a>
             </div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card" style="background:linear-gradient(135deg,#e65100,#ff8f00)">
-            <div class="fs-5 fw-bold">{{ total_missed }}</div>
+        <div class="stat-card fade-in"
+            style="background:linear-gradient(135deg,#1565c0,#42a5f5); animation-delay: 200ms;">
+            <div class="fs-5 fw-bold counter-animate" data-target="{{ total_scheduled }}">0</div>
             <div class="small">
-                <a  href="{% url 'attendance_list' %}" class="text-white text-decoration-none">
-                    <i class="bi bi-x-circle"></i>
-                    Missed 
+                <a href="{% url 'appointment_list' %}" class="text-white text-decoration-none stretched-link">
+                    <i class="bi bi-calendar3"></i> Scheduled
                 </a>
             </div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card" style="background:linear-gradient(135deg,#6a0dad,#ab47bc)">
-            <div class="fs-5 fw-bold">{{ sms_sent }}</div>
-            <div class="small"><a  href="{% url 'sms_log_list' %}" class="text-white text-decoration-none">
-                <i class="bi bi-chat-dots"></i> SMS Sent</a>
+        <div class="stat-card fade-in"
+            style="background:linear-gradient(135deg,#e65100,#ff8f00); animation-delay: 300ms;">
+            <div class="fs-5 fw-bold counter-animate" data-target="{{ total_missed }}">0</div>
+            <div class="small">
+                <a href="{% url 'attendance_list' %}" class="text-white text-decoration-none stretched-link">
+                    <i class="bi bi-x-circle"></i> Missed
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card fade-in"
+            style="background:linear-gradient(135deg,#6a0dad,#ab47bc); animation-delay: 400ms;">
+            <div class="fs-5 fw-bold counter-animate" data-target="{{ sms_sent }}">0</div>
+            <div class="small">
+                <a href="{% url 'sms_log_list' %}" class="text-white text-decoration-none stretched-link">
+                    <i class="bi bi-chat-dots"></i> SMS Sent
+                </a>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row g-3">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header"><i class="bi bi-calendar3"></i> Upcoming Appointments</div>
+    <!-- Left Column: Upcoming Appointments & SMS Summary -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 fade-in h-100" style="animation-delay: 500ms;">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 fw-bold text-dark"><i class="bi bi-calendar-event text-primary me-2"></i>Upcoming
+                    Appointments</h6>
+                <a href="{% url 'appointment_list' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View
+                    All</a>
+            </div>
             <div class="card-body p-0">
                 {% if upcoming_appointments %}
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Patient</th>
-                            <th>Date &amp; Time</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for appt in upcoming_appointments %}
-                        <tr>
-                            <td><a href="{% url 'patient_detail' appt.patient.pk %}">{{ appt.patient.name }}</a></td>
-                            <td>{{ appt.appointment_date|date:"M d, Y H:i" }}</td>
-                            <td><span class="badge bg-primary">{{ appt.status }}</span></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-secondary">
+                            <tr>
+                                <th class="ps-4">Patient</th>
+                                <th>Date &amp; Time</th>
+                                <th>Status</th>
+                                <th class="pe-4 text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appt in upcoming_appointments %}
+                            <tr>
+                                <td class="ps-4 fw-medium">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="bg-light rounded-circle p-2 text-primary">
+                                            <i class="bi bi-person"></i>
+                                        </div>
+                                        <a href="{% url 'patient_detail' appt.patient.pk %}"
+                                            class="text-dark text-decoration-none hover-primary">{{ appt.patient.name }}</a>
+                                    </div>
+                                </td>
+                                <td>{{ appt.appointment_date|date:"M d, Y H:i" }}</td>
+                                <td><span
+                                        class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1"><i
+                                            class="bi bi-clock me-1"></i>{{ appt.status }}</span></td>
+                                <td class="pe-4 text-end">
+                                    <form method="post" action="{% url 'patient_checkin' appt.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 shadow-sm"
+                                            title="Mark patient as arrived">
+                                            <i class="bi bi-check2-circle me-1"></i> Arrived
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
-                <p class="p-3 text-muted mb-0">No upcoming appointments.</p>
+                <div class="text-center p-5 text-muted">
+                    <div class="fs-1 opacity-25 mb-3"><i class="bi bi-calendar-check"></i></div>
+                    <h6>No upcoming appointments</h6>
+                    <p class="small">The schedule is clear for now.</p>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header"><i class="bi bi-chat-dots"></i> SMS Summary</div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Sent <span class="badge bg-success rounded-pill">{{ sms_sent }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Failed <span class="badge bg-danger rounded-pill">{{ sms_failed }}</span>
-                    </li>
-                </ul>
-                <a href="{% url 'sms_log_list' %}" class="btn btn-sm btn-outline-secondary mt-3 w-100">View All Logs</a>
+
+    <!-- Right Column: Notifications & Quick Stats -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 fade-in h-100" style="animation-delay: 600ms;">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 fw-bold text-dark"><i class="bi bi-bell-fill text-danger me-2"></i>Recent Activity</h6>
+                {% if recent_notifications %}
+                <a href="{% url 'notification_list' %}" class="text-decoration-none small">See all</a>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                {% if recent_notifications %}
+                <div class="list-group list-group-flush">
+                    {% for notif in recent_notifications %}
+                    <div class="list-group-item border-bottom-0 py-3 {% if not notif.is_read %}bg-light{% endif %}">
+                        <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+                            <h6 class="mb-0 fw-bold small text-dark {% if not notif.is_read %}text-primary{% endif %}">
+                                {{ notif.title }}</h6>
+                            <small class="text-muted" style="font-size: 0.7rem;">{{ notif.created_at|timesince }}
+                                ago</small>
+                        </div>
+                        <p class="mb-0 small text-secondary">{{ notif.message|truncatechars:60 }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center p-5 text-muted">
+                    <div class="fs-1 opacity-25 mb-3"><i class="bi bi-bell-slash"></i></div>
+                    <h6>No recent activity</h6>
+                    <p class="small">Notifications will appear here.</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-light border-top text-center py-3">
+                <div class="row text-center mb-0 g-0">
+                    <div class="col-6 border-end">
+                        <div class="small text-muted text-uppercase fw-semibold" style="letter-spacing: 1px;">SMS Sent
+                        </div>
+                        <div class="fs-5 fw-bold text-success">{{ sms_sent }}</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="small text-muted text-uppercase fw-semibold" style="letter-spacing: 1px;">Failed
+                        </div>
+                        <div class="fs-5 fw-bold text-danger">{{ sms_failed }}</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Counter animation for stat cards
+    document.addEventListener("DOMContentLoaded", () => {
+        const counters = document.querySelectorAll('.counter-animate');
+        const speed = 200; // The lower the slower
+
+        counters.forEach(counter => {
+            const animate = () => {
+                const value = +counter.getAttribute('data-target');
+                const data = +counter.innerText;
+
+                const time = value / speed;
+                if (data < value) {
+                    counter.innerText = Math.ceil(data + time);
+                    setTimeout(animate, 20);
+                } else {
+                    counter.innerText = value;
+                }
+            }
+            // Add a slight delay to allow fade-in to start
+            setTimeout(animate, 300);
+        });
+    });
+</script>
 {% endblock %}

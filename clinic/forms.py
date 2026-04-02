@@ -48,10 +48,16 @@ def clean_phone_number(self):
     return phone
 
 class AppointmentForm(forms.ModelForm):
+    patient = forms.ModelChoiceField(
+        queryset=Patient.objects.all().order_by('name'),
+        empty_label="--- Select Patient ---",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
     class Meta:
         model = Appointment
         fields = ['patient', 'appointment_date', 'notes']
         widgets = {
-            'appointment_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'notes': forms.Textarea(attrs={'rows': 3}),
+            'appointment_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'notes': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
         }

@@ -12,14 +12,6 @@
 
     <style>
 
-        .main-content {
-            padding: 28px 30px;
-        }
-
-        .main-content.auth-page {
-            padding-top: 60px;     /* less top padding for centered login/register forms */
-            padding-bottom: 100px;
-        }
         /* ── Global ── */
         body {
             background: linear-gradient(rgba(238, 242, 247, 0.94), rgba(238, 242, 247, 0.94)),
@@ -32,10 +24,36 @@
             min-height: 100vh;
         }
 
+        /* ── Animations ── */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseBadge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); box-shadow: 0 0 10px rgba(220,53,69,0.5); }
+            100% { transform: scale(1); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+            opacity: 0;
+        }
+
+        .main-content {
+            padding: 28px 30px;
+        }
+
+        .main-content.auth-page {
+            padding-top: 60px;
+            padding-bottom: 100px;
+        }
+
         /* ── Navbar ── */
         .navbar {
             background: #1b4f72 !important;
             box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+            z-index: 1050;
         }
 
         .navbar-brand {
@@ -52,11 +70,38 @@
             color: #ffffff !important;
         }
 
+        /* ── Notification Bell ── */
+        .notification-btn {
+            position: relative;
+            background: transparent;
+            border: none;
+            color: #d6eaf8;
+            font-size: 1.25rem;
+            padding: 0.25rem 0.5rem;
+            transition: all 0.2s;
+        }
+        .notification-btn:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .notification-badge {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            font-size: 0.65rem;
+            padding: 0.2em 0.4em;
+            border-radius: 50%;
+            background-color: #dc3545;
+            color: white;
+            border: 2px solid #1b4f72;
+            animation: pulseBadge 2s infinite;
+        }
+
         /* ── Sidebar ── */
         .sidebar {
             min-height: calc(100vh - 58px);
-            background: #154360;
-            /* Deep navy background */
+            background: rgba(21, 67, 96, 0.95);
+            backdrop-filter: blur(10px);
             border-right: 1px solid rgba(255, 255, 255, .1);
             padding: 1.25rem .75rem;
             color: #d6eaf8;
@@ -64,7 +109,6 @@
 
         .sidebar .nav-link {
             color: #d6eaf8 !important;
-            /* Soft light blue for contrast */
             border-radius: 10px;
             margin-bottom: 6px;
             padding: 11px 16px;
@@ -72,12 +116,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar .nav-link i {
             font-size: 1.1rem;
             opacity: 0.85;
+            transition: transform 0.2s;
         }
 
         .sidebar .nav-link:hover {
@@ -88,11 +133,11 @@
 
         .sidebar .nav-link:hover i {
             opacity: 1;
+            transform: scale(1.1);
         }
 
         .sidebar .nav-link.active {
             background-color: #21618c;
-            /* Distinct active color */
             color: #ffffff !important;
             font-weight: 600;
             box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
@@ -107,22 +152,21 @@
             text-transform: uppercase;
             letter-spacing: .1em;
             color: rgba(214, 234, 248, 0.5);
-            /* Faded heading for depth */
             padding: 20px 16px 8px;
             font-weight: 700;
-        }
-
-        /* ── Main content area ── */
-        .main-content {
-            padding: 28px 30px;
         }
 
         /* ── Cards ── */
         .card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, .07);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .05);
             background: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
         }
 
         .card-header {
@@ -131,6 +175,7 @@
             font-weight: 600;
             border-radius: 12px 12px 0 0 !important;
             padding: 12px 18px;
+            border-bottom: none;
         }
 
         .card-header .btn-light {
@@ -144,37 +189,46 @@
         }
 
         /* ── Tables ── */
+        .table {
+            margin-bottom: 0;
+        }
         .table thead th {
-            background-color: #f0f4f8;
+            background-color: #f8fafc;
             color: #495057;
             font-weight: 600;
             font-size: .875rem;
-            border-bottom: 2px solid #dee2e6;
+            border-bottom: 2px solid #e9ecef;
+            padding: 12px 16px;
         }
-
+        .table tbody td {
+            padding: 12px 16px;
+            vertical-align: middle;
+        }
+        .table tbody tr {
+            transition: background-color 0.2s;
+        }
         .table tbody tr:hover {
-            background-color: #f7f9fc;
+            background-color: #f1f5f9;
         }
 
         /* ── Buttons ── */
+        .btn {
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
         .btn-primary {
             background-color: #1b4f72;
             border-color: #1b4f72;
+            box-shadow: 0 2px 6px rgba(27,79,114,0.3);
         }
-
         .btn-primary:hover {
             background-color: #154360;
             border-color: #154360;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(27,79,114,0.4);
         }
-
-        .btn-outline-primary {
-            color: #1b4f72;
-            border-color: #1b4f72;
-        }
-
-        .btn-outline-primary:hover {
-            background-color: #1b4f72;
-            color: #fff;
+        .btn-sm {
+            border-radius: 6px;
         }
 
         /* ── Stat cards ── */
@@ -183,18 +237,43 @@
             padding: 22px 20px;
             color: white;
             box-shadow: 0 4px 14px rgba(0, 0, 0, .15);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
         }
-
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(255,255,255,0.1), transparent);
+            border-radius: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .2);
+        }
+        .stat-card:hover::after {
+            opacity: 1;
+        }
         .stat-card .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2.5rem;
+            font-weight: 800;
             line-height: 1;
+            letter-spacing: -1px;
         }
-
         .stat-card .stat-label {
             font-size: .85rem;
             opacity: .9;
-            margin-top: 4px;
+            margin-top: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-card a {
+            position: relative;
+            z-index: 2;
         }
 
         /* ── Footer ── */
@@ -207,9 +286,54 @@
             margin-top: 48px;
         }
 
-        /* ── Alerts ── */
+        /* ── Alerts & Toasts ── */
         .alert {
             border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: none;
+        }
+        
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1060;
+        }
+
+        /* Notification Dropdown Customization */
+        .dropdown-menu-notifications {
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: none;
+            border-radius: 12px;
+            padding: 0;
+        }
+        .dropdown-menu-notifications .dropdown-header {
+            background: #f8fafc;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #1b4f72;
+        }
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: block;
+            color: #212529;
+        }
+        .notification-item:hover {
+            background-color: #f8fafc;
+        }
+        .notification-item.unread {
+            background-color: #f0f7ff;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
@@ -220,14 +344,47 @@
             <a class="navbar-brand" href="{% url 'dashboard' %}">
                 <i class="bi bi-hospital-fill me-2"></i>ANC Reminder Portal
             </a>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navTop">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navTop">
-                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
                     {% if user.is_authenticated %}
+                        
+                        <!-- Notification Bell Dropdown -->
+                        <li class="nav-item dropdown">
+                            <button class="notification-btn" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-bell-fill"></i>
+                                {% if unread_notification_count > 0 %}
+                                    <span class="badge notification-badge" id="navUnreadCount">{{ unread_notification_count }}</span>
+                                {% else %}
+                                    <span class="badge notification-badge d-none" id="navUnreadCount">0</span>
+                                {% endif %}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-notifications" aria-labelledby="notificationDropdown">
+                                <div class="dropdown-header d-flex justify-content-between align-items-center">
+                                    <span>Notifications</span>
+                                    <form method="post" action="{% url 'mark_all_notifications_read' %}" class="m-0 p-0">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link btn-sm text-decoration-none p-0">Mark all read</button>
+                                    </form>
+                                </div>
+                                <div id="notificationList">
+                                    <!-- Populated via AJAX -->
+                                    <div class="text-center p-3 text-muted small" id="loadingNotifications">
+                                        <div class="spinner-border spinner-border-sm me-2" role="status"></div> Loading...
+                                    </div>
+                                </div>
+                                <div class="p-2 text-center border-top">
+                                    <a href="{% url 'notification_list' %}" class="text-decoration-none small text-primary fw-semibold">View All Notifications</a>
+                                </div>
+                            </div>
+                        </li>
+
                         <li class="nav-item">
-                            <span class="nav-link fw-semibold">
+                            <span class="nav-link fw-semibold" style="cursor: default;">
                                 <i class="bi bi-person-circle me-1"></i>{{ user.username }}
                             </span>
                         </li>
@@ -270,6 +427,15 @@
                         <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
                             href="{% url 'dashboard' %}">
                             <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item mt-1">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'notification_list' %}active{% endif %}"
+                            href="{% url 'notification_list' %}">
+                            <i class="bi bi-bell"></i> Notifications
+                            {% if unread_notification_count > 0 %}
+                                <span class="badge bg-danger ms-auto rounded-pill">{{ unread_notification_count }}</span>
+                            {% endif %}
                         </a>
                     </li>
                 </ul>
@@ -321,15 +487,19 @@
             </div>
             <div class="col-md-10 main-content">
                 {% else %}
-                <div class="col-12 main-content">
+                <div class="col-12 main-content auth-page">
                     {% endif %}
 
                     {% if messages %}
                     {% for message in messages %}
-                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show fade-in"
                         role="alert">
-                        <i
-                            class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}x-circle{% else %}info-circle{% endif %} me-2"></i>
+                        <!-- Use person-check for quick visual matching to Check-In -->
+                        {% if "checked in" in message.message %}
+                            <i class="bi bi-person-check-fill me-2 fs-5"></i>
+                        {% else %}
+                            <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}x-circle{% else %}info-circle{% endif %} me-2"></i>
+                        {% endif %}
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
@@ -345,7 +515,168 @@
             </div>
         </div>
 
+        <!-- Notification Reader Modal -->
+        <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="notificationModalLabel"><i class="bi bi-bell-fill me-2"></i>Notification Details</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body pb-0 mt-2">
+                        <h6 id="notifModalTitle" class="fw-bold mb-1 fs-5">Title</h6>
+                        <p class="text-muted small mb-3"><i class="bi bi-clock me-1"></i><span id="notifModalDate">Date</span></p>
+                        <div class="p-3 bg-light rounded text-dark" id="notifModalMessage" style="min-height: 80px; font-size: 1.05rem; line-height: 1.6;">
+                            Message body...
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0 mt-4">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container for live notifications -->
+        <div id="toast-container" class="toast-container p-3"></div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        {% if user.is_authenticated %}
+        <script>
+            // Add fade-in animation to all cards automatically if not explicitly set
+            document.addEventListener('DOMContentLoaded', () => {
+                const cards = document.querySelectorAll('.card:not(.fade-in)');
+                cards.forEach((card, index) => {
+                    card.classList.add('fade-in');
+                    card.style.animationDelay = `${index * 100}ms`;
+                });
+            });
+
+            // Notification Dropdown Fetch
+            const notifDropdown = document.getElementById('notificationDropdown');
+            const notifList = document.getElementById('notificationList');
+            const navUnreadCount = document.getElementById('navUnreadCount');
+            
+            if (notifDropdown) {
+                notifDropdown.addEventListener('show.bs.dropdown', function () {
+                    notifList.innerHTML = `<div class="text-center p-3 text-muted small"><div class="spinner-border spinner-border-sm me-2" role="status"></div> Loading...</div>`;
+                    
+                    fetch('{% url "recent_notifications_api" %}')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.notifications.length === 0) {
+                                notifList.innerHTML = `<div class="text-center p-4 text-muted small"><i class="bi bi-check2-circle mb-2 fs-4 d-block"></i>You're all caught up!</div>`;
+                                return;
+                            }
+                            
+                            let html = '';
+                            data.notifications.forEach(n => {
+                                let icon = n.type === 'check_in' ? 'bi-person-check-fill text-success' : 'bi-bell-fill text-primary';
+                                let unreadClass = n.is_read ? '' : 'unread';
+                                
+                                html += `
+                                <a href="#" class="notification-item ${unreadClass}" onclick="openNotificationModal('${n.id}', '${n.title.replace(/'/g, "\\'")}', '${n.message.replace(/'/g, "\\'")}', '${n.created_at}')">
+                                    <div class="d-flex gap-3 align-items-start">
+                                        <i class="bi ${icon} mt-1"></i>
+                                        <div>
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-1 small fw-bold text-dark">${n.title}</h6>
+                                                <small class="text-muted ms-2">${n.created_at}</small>
+                                            </div>
+                                            <p class="mb-0 small text-secondary">${n.message.length > 50 ? n.message.substring(0,50) + '...' : n.message}</p>
+                                        </div>
+                                    </div>
+                                </a>`;
+                            });
+                            notifList.innerHTML = html;
+                        })
+                        .catch(err => {
+                            notifList.innerHTML = `<div class="text-center p-3 text-danger small">Error loading notifications</div>`;
+                        });
+                });
+            }
+
+            // AJAX Polling for Unread Count
+            let currentUnreadCount = parseInt(navUnreadCount ? navUnreadCount.innerText : 0) || 0;
+            
+            setInterval(() => {
+                fetch('{% url "unread_notification_count" %}')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (navUnreadCount) {
+                            if (data.count > 0) {
+                                navUnreadCount.innerText = data.count;
+                                navUnreadCount.classList.remove('d-none');
+                                // If count increased, show a toast!
+                                if (data.count > currentUnreadCount) {
+                                    showToast("New Notification", "You have a new unread notification.");
+                                }
+                            } else {
+                                navUnreadCount.classList.add('d-none');
+                            }
+                            currentUnreadCount = data.count;
+                        }
+                    });
+            }, 15000); // Check every 15 seconds
+
+            function showToast(title, message) {
+                const toastContainer = document.getElementById('toast-container');
+                const toastHtml = `
+                    <div class="toast show animate__animated animate__slideInRight" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-primary text-white">
+                            <i class="bi bi-bell-fill me-2"></i>
+                            <strong class="me-auto">${title}</strong>
+                            <small>Just now</small>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body bg-white">
+                            ${message}
+                        </div>
+                    </div>`;
+                toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+                const newToast = toastContainer.lastElementChild;
+                setTimeout(() => {
+                    newToast.classList.remove('show');
+                    setTimeout(() => newToast.remove(), 300);
+                }, 5000);
+            }
+
+            // Function to open the detailed reading modal
+            function openNotificationModal(id, title, message, date) {
+                document.getElementById('notifModalTitle').innerText = title;
+                document.getElementById('notifModalDate').innerText = date;
+                document.getElementById('notifModalMessage').innerText = message;
+                
+                // Show modal
+                const modalEl = document.getElementById('notificationModal');
+                if (modalEl) {
+                    const modal = new bootstrap.Modal(modalEl);
+                    modal.show();
+                }
+
+                // Automatically mark as read via background AJAX call
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+                if (csrftoken && id != '0' && id != '') {
+                    const markReadUrl = "{% url 'mark_notification_read' 999999 %}".replace('999999', id);
+                    fetch(markReadUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    }).then(() => {
+                        // Optimistically remove unread highlight if on notification list
+                        const notifItem = document.querySelector(`.notification-card[data-notif-id="${id}"]`);
+                        if (notifItem) {
+                            notifItem.classList.remove('notification-unread');
+                        }
+                    }).catch(e => console.error(e));
+                }
+            }
+        </script>
+        {% endif %}
+        
         {% block extra_js %}{% endblock %}
 </body>
 
